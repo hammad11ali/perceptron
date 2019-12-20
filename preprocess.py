@@ -1,5 +1,4 @@
 import pandas
-import random
 import sys
 data_csv=pandas.DataFrame()
 out_data=pandas.DataFrame()

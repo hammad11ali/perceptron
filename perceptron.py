@@ -1,6 +1,8 @@
+# Importing necessory modules
 import pandas
 import random
 import sys
+# Declaring global variables
 learning_rate=0.2
 data_csv=pandas.DataFrame()
 data=[]
@@ -9,37 +11,30 @@ prediction=[]
 activation=[]
 arguments=sys.argv
 col_names=[]
-
-# for set the value of Threshould
-
+# Function to fix threshold
 def fixThreshold(error):
     newBiase=weights[0]+learning_rate*(error)
     if newBiase>learning_rate and newBiase<1 :
         weights[0]=newBiase
-        
-# for predict the value according to weights 
-
+# Function to predict output for an amaple in dataset
 def predict(row):
     activation=0
     for i in range(1,len(weights)):
         activation+=weights[i]*row[i-1]
     activation-=weights[0]
     return 1 if activation>=0 else 0
-
-# update weights according to error
-
+# Function to update the weights according to the error
 def errorSolving(error,row):
     for i in range (1,len(weights)):
         weights[i]=weights[i]+learning_rate*(error)*row[i-1]
 
-#inialize the weights and threshould randomly
+# Function to initialize weights and threshold randomly
 def initialize():  
     weights.append(random.uniform(learning_rate,1))     
     for j in range(0,len(data_csv.columns)-1):
         ran=random.uniform(0,1)
         weights.append(ran)
-
-# learn weights from given data file
+# Main entry point function to start learning 
 def learn():
     flag=True
     while flag==True:
@@ -54,8 +49,7 @@ def learn():
             if error!=0.0:
                 flag=True  
     print("Done")
-    #calculate the Accuracy
-    
+# Function to find Accuracy
 def Accuracy():
     data_csv=pandas.read_csv('testpredict.csv')
     data=data_csv.values.tolist()
@@ -67,9 +61,8 @@ def Accuracy():
         if data[i][actualIndex]==data[i][predictedIndex]:
             correct=correct+1
     Accuracy=correct/len(data)*100
-    print("Accuracy is: "+str(Accuracy)+"%")
-      
-# save weights of every epoche in file
+    print("Accuracy is: "+str(Accuracy)+"%")  
+# Function to save weights calculated in each episode in a file
 def save():
     values=[]
     for i in range(0,len(weights)):
@@ -81,8 +74,6 @@ def save():
     else:  
         mdf.to_csv(arguments[4]+".csv", index=False) 
 
-# when program learn from given data
- 
 if arguments[1]=="--learn":
     data_csv=pandas.read_csv(arguments[2])
     data=data_csv.values.tolist()
@@ -95,9 +86,6 @@ if arguments[1]=="--learn":
         values.append(weights[i])
     mdf.loc[len(mdf)]=values
     learn()
- 
-# when program use for testing
-    
 if arguments[1]=="--test":
     data_csv=pandas.read_csv(arguments[2])
     data=data_csv.values.tolist()
@@ -131,5 +119,3 @@ if arguments[1]=="--test":
         mdf.to_csv("testpredict.csv", index=False)
     print("Done")
     Accuracy()
-
-    
